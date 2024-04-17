@@ -12,6 +12,8 @@ class GithubTrendingContentItem(ContentItem):
         self.content = get_readme(self.title)
 
     def llm_summarize(self):
+        if len(self.content) > 15000:
+            self.content = self.content[:15000]
         self.content = llm.project_summarize(self.content)
 
 
@@ -28,4 +30,7 @@ def fetch(date_range: str = "daily") -> Content:
 
 def get_readme(project_path: str) -> str:
     response = requests.get(f"https://api.github.com/repos/{project_path}/contents/README.md").json()
-    return base64.b64decode(response["content"]).decode()
+    readme = base64.b64decode(response["content"]).decode()
+    if len(readme) > 15000:
+        readme = readme[:15000]
+    return readme

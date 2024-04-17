@@ -10,6 +10,8 @@ class HackerNewsContentItem(ContentItem):
         super().__init__(title, content, url)
 
     def llm_summarize(self):
+        if len(self.content)>15000:
+            self.content=self.content[:15000]
         self.content = llm.summarize(self.content)
 
 
